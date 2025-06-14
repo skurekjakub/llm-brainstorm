@@ -1,0 +1,27 @@
+{
+  "name": "llm-brainstorm",
+  "version": "1.0.0",
+  "description": "LangChain hybrid summary conversational agent",
+  "main": "langchain-hybrid-summary.ts",
+  "scripts": {
+    "start": "ts-node langchain-hybrid-summary.ts",
+    "build": "tsc",
+    "dev": "ts-node --watch langchain-hybrid-summary.ts"
+  },
+  "dependencies": {
+    "@langchain/google-genai": "^0.2.12",
+    "@langchain/community": "^0.3.46",
+    "@langchain/core": "^0.3.58",
+    "langchain": "^0.3.28",
+    "zod": "^3.25.64",
+    "dotenv": "^16.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "typescript": "^5.8.3",
+    "ts-node": "^10.9.2"
+  },
+  "keywords": ["langchain", "ai", "chatbot", "memory", "summarization"],
+  "author": "",
+  "license": "MIT"
+}
