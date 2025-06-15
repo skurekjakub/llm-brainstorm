@@ -1,12 +1,23 @@
 {
   "name": "llm-brainstorm",
   "version": "1.0.0",
-  "description": "LangChain hybrid summary conversational agent",
-  "main": "langchain-hybrid-summary.ts",
+  "description": "Advanced prompt engineering and conversational AI with LangChain",
+  "main": "src/agents/langchain-hybrid-summary.ts",
   "scripts": {
-    "start": "ts-node langchain-hybrid-summary.ts",
+    "start": "ts-node src/agents/langchain-hybrid-summary.ts",
+    "agent": "ts-node src/agents/langchain-hybrid-summary.ts",
     "build": "tsc",
-    "dev": "ts-node --watch langchain-hybrid-summary.ts"
+    "dev": "ts-node --watch src/agents/langchain-hybrid-summary.ts",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "heuristic-9": "ts-node src/heuristics/heuristic-9-roleplay.ts",
+    "heuristic-10": "ts-node src/heuristics/heuristic-10-cacophony.ts",
+    "roleplay": "ts-node src/heuristics/heuristic-9-roleplay.ts",
+    "cacophony": "ts-node src/heuristics/heuristic-10-cacophony.ts",
+    "test-config": "ts-node -e \"import { ConfigManager } from './src/managers/config-manager'; const cm = ConfigManager.getInstance(); console.log('✅ Config loaded:', cm.getConfigStats());\"",
+    "test-db": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('✅ Database loaded:', db.getStats());\"",
+    "list-characters": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('Characters:', db.getAllCharacters().map(c => c.name));\"",
+    "help": "ts-node index.ts help"
   },
   "dependencies": {
     "@langchain/community": "^0.3.46",

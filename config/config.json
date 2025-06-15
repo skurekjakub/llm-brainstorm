@@ -1,0 +1,41 @@
+{
+  "models": {
+    "main": {
+      "provider": "google",
+      "model": "gemini-1.5-pro-latest",
+      "temperature": 0.0,
+      "description": "Primary model for main reasoning and analysis"
+    },
+    "roleplay": {
+      "provider": "google", 
+      "model": "gemini-1.5-pro-latest",
+      "temperature": 0.8,
+      "description": "Model for character roleplay with higher creativity"
+    },
+    "cacophony": {
+      "provider": "google",
+      "model": "gemini-2.5-pro-preview-06-05", 
+      "temperature": 1,
+      "description": "Model for diverse perspective generation"
+    },
+    "summarizer": {
+      "provider": "google",
+      "model": "gemini-1.5-flash-latest",
+      "temperature": 0.0,
+      "description": "Fast model for summarization tasks"
+    }
+  },
+  "settings": {
+    "defaultMaxTokens": 4096,
+    "defaultTimeout": 30000,
+    "retryAttempts": 3,
+    "fiendCount": 5,
+    "memoryTokenLimit": 1000
+  },
+  "providers": {
+    "google": {
+      "apiKeyEnvVar": "GOOGLE_API_KEY",
+      "baseUrl": "https://generativelanguage.googleapis.com"
+    }
+  }
+}

@@ -8,12 +8,16 @@ import { ConversationSummaryBufferMemory } from "langchain/memory";
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { TavilySearch } from "@langchain/tavily";
+import { ConfigManager } from '../managers/config-manager';
 
 /**
  * --- 1. SET UP ENVIRONMENT ---
  */
 import 'dotenv/config';
 import { StructuredToolInterface, ToolInterface } from "@langchain/core/tools";
+
+// Initialize configuration manager
+const configManager = ConfigManager.getInstance();
 
 /**
  * --- 2. DEFINE CUSTOM TOOLS ---
@@ -100,13 +104,23 @@ New summary:`;
  * --- CONFIGURE LLMS AND MEMORY ---
  */
 async function main() {
-  const mainLlm = new ChatGoogleGenerativeAI({ model: "gemini-1.5-pro-latest", temperature: 0 });
-  const summarizerLlm = new ChatGoogleGenerativeAI({ model: "gemini-1.5-flash-latest", temperature: 0 });
+  const mainModelConfig = configManager.getModelConfig('main');
+  const summarizerModelConfig = configManager.getModelConfig('summarizer');
+  const settings = configManager.getSettings();
+  
+  const mainLlm = new ChatGoogleGenerativeAI({ 
+    model: mainModelConfig.model, 
+    temperature: mainModelConfig.temperature 
+  });
+  const summarizerLlm = new ChatGoogleGenerativeAI({ 
+    model: summarizerModelConfig.model, 
+    temperature: summarizerModelConfig.temperature 
+  });
 
   // Use our new HybridMemory class
   const memory = new HybridMemory({
       llm: summarizerLlm,
-      maxTokenLimit: 1000, 
+      maxTokenLimit: settings.memoryTokenLimit, 
       memoryKey: "chat_history",
       returnMessages: true,
   });
