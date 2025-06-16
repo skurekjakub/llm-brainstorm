@@ -10,7 +10,7 @@ async function main() {
     const { CacophonyOrchestrator } = await import('./heuristic-10-cacophony');
     
     // Create and run the orchestrator
-    const orchestrator = new CacophonyOrchestrator();
+    const orchestrator = await CacophonyOrchestrator.create();
     await orchestrator.runConversationalSession();
     
   } catch (error) {

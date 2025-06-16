@@ -1,5 +1,4 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { TavilySearch } from "@langchain/tavily";
 import { AgentExecutor, createReactAgent, createToolCallingAgent } from "langchain/agents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
@@ -26,14 +25,21 @@ export class ReactAgentManager {
   private toolRegistry: ToolRegistry;
   private reactAgents: Map<string, AgentExecutor>;
 
-  constructor(llm: ChatGoogleGenerativeAI, memoryManager: MemoryManager, searchTool?: TavilySearch) {
+  private constructor(llm: ChatGoogleGenerativeAI, memoryManager: MemoryManager, toolRegistry: ToolRegistry) {
     this.llm = llm;
     this.memoryManager = memoryManager;
     this.dbManager = FiendsDBManager.getInstance();
     this.reactAgents = new Map();
-    
-    // Initialize tool registry
-    this.toolRegistry = new ToolRegistry(memoryManager, searchTool);
+    this.toolRegistry = toolRegistry;
+  }
+
+  /**
+   * Create and initialize a new ReactAgentManager instance
+   */
+  static async create(llm: ChatGoogleGenerativeAI, memoryManager: MemoryManager): Promise<ReactAgentManager> {
+    // Initialize tool registry asynchronously
+    const toolRegistry = await ToolRegistry.create(memoryManager);
+    return new ReactAgentManager(llm, memoryManager, toolRegistry);
   }
 
   /**
@@ -174,6 +180,22 @@ export class ReactAgentManager {
   clearAgents(): void {
     this.reactAgents.clear();
     console.log("🧹 Cleared all ReAct agent cache");
+  }
+
+  /**
+   * Refresh tools and clear agent cache (useful when MCP servers connect/disconnect)
+   */
+  async refreshTools(): Promise<void> {
+    await this.toolRegistry.refreshTools();
+    this.clearAgents(); // Clear cached agents so they pick up new tools
+    console.log("🔄 Refreshed tools and cleared agent cache");
+  }
+
+  /**
+   * Get MCP manager for direct MCP operations
+   */
+  getMCPManager() {
+    return this.toolRegistry.getMCPManager();
   }
 
   /**

@@ -13,8 +13,20 @@ export class InternetSearchTool implements ToolCreator {
   private searchTool: TavilySearch | null;
   private config: BaseToolConfig;
 
-  constructor(searchTool?: TavilySearch) {
-    this.searchTool = searchTool || null;
+  constructor() {
+    // Initialize search tool internally if API key is available
+    this.searchTool = null;
+    
+    try {
+      if (process.env.TAVILY_API_KEY) {
+        this.searchTool = new TavilySearch({ 
+          maxResults: 3
+        });
+      }
+    } catch (error) {
+      console.log("⚠️  Failed to initialize Tavily search tool:", error);
+    }
+
     this.config = {
       name: "internet_search",
       description: "Search the internet for current information, news, facts, or recent developments",

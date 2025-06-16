@@ -13,17 +13,33 @@ import 'dotenv/config';
  */
 
 export class CacophonyOrchestrator {
-  private llm: ChatGoogleGenerativeAI;
   private configManager: ConfigManager;
-  private councilManager: CouncilManager;
-  private memoryManager: MemoryManager;
-  private conversationEngine: ConversationEngine;
-  private uiManager: UIManager;
+  private llm!: ChatGoogleGenerativeAI;
+  private councilManager!: CouncilManager;
+  private memoryManager!: MemoryManager;
+  private conversationEngine!: ConversationEngine;
+  private uiManager!: UIManager;
   private councilMembers: string[];
 
-  constructor() {
+  private constructor() {
     // Initialize configuration
     this.configManager = ConfigManager.getInstance();
+    this.councilMembers = [];
+  }
+
+  /**
+   * Create and initialize a new CacophonyOrchestrator instance
+   */
+  static async create(): Promise<CacophonyOrchestrator> {
+    const orchestrator = new CacophonyOrchestrator();
+    await orchestrator.initialize();
+    return orchestrator;
+  }
+
+  /**
+   * Initialize the engine components
+   */
+  private async initialize(): Promise<void> {
     const modelConfig = this.configManager.getModelConfig('cacophony');
     
     // Initialize LLM
@@ -35,9 +51,8 @@ export class CacophonyOrchestrator {
     // Initialize component managers
     this.councilManager = new CouncilManager();
     this.memoryManager = new MemoryManager(this.llm);
-    this.conversationEngine = new ConversationEngine(this.llm, this.memoryManager);
+    this.conversationEngine = await ConversationEngine.create(this.llm, this.memoryManager);
     this.uiManager = new UIManager();
-    this.councilMembers = [];
   }
 
   /**

@@ -31,31 +31,45 @@ export class ConversationEngine {
   private searchEnabled: boolean;
   private agentManager: ReactAgentManager;
 
-  constructor(llm: ChatGoogleGenerativeAI, memoryManager: MemoryManager) {
+  private constructor(llm: ChatGoogleGenerativeAI, memoryManager: MemoryManager, agentManager: ReactAgentManager) {
     this.llm = llm;
     this.memoryManager = memoryManager;
     this.dbManager = FiendsDBManager.getInstance();
     this.searchTool = null;
-    
+    this.agentManager = agentManager;
+    this.searchEnabled = false;
+  }
+
+  /**
+   * Create and initialize a new ConversationEngine instance
+   */
+  static async create(llm: ChatGoogleGenerativeAI, memoryManager: MemoryManager): Promise<ConversationEngine> {
+    let searchTool: TavilySearch | undefined = undefined;
+    let searchEnabled = false;
+
     // Initialize search tool if API key is available
     try {
       if (process.env.TAVILY_API_KEY) {
-        this.searchTool = new TavilySearch({
+        searchTool = new TavilySearch({
           maxResults: 3
         });
-        this.searchEnabled = true;
+        searchEnabled = true;
         console.log("🔍 Internet search capabilities enabled for fiends");
       } else {
-        this.searchEnabled = false;
         console.log("⚠️  Internet search disabled - TAVILY_API_KEY not found");
       }
     } catch (error) {
       console.log("⚠️  Internet search disabled - Tavily not available");
-      this.searchEnabled = false;
     }
 
     // Initialize ReAct agent manager
-    this.agentManager = new ReactAgentManager(this.llm, this.memoryManager, this.searchTool || undefined);
+    const agentManager = await ReactAgentManager.create(llm, memoryManager);
+    
+    const engine = new ConversationEngine(llm, memoryManager, agentManager);
+    engine.searchTool = searchTool || null;
+    engine.searchEnabled = searchEnabled;
+    
+    return engine;
   }
 
   /**
