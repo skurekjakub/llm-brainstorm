@@ -1,7 +1,8 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ConfigManager } from '../managers/config-manager';
 import { CouncilManager, MemoryManager, ConversationEngine, UIManager } from '../services';
-import { ConversationTurn } from '../services/memory-manager';
+import { ConversationTurn } from '../services/memory/memory-manager';
+import { ServiceFactory } from '../services/service-factory';
 import 'dotenv/config';
 
 /**
@@ -48,9 +49,13 @@ export class CacophonyOrchestrator {
       temperature: modelConfig.temperature
     });
     
-    // Initialize component managers
+    // Initialize component managers using new service factory
     this.councilManager = new CouncilManager();
-    this.memoryManager = new MemoryManager(this.llm);
+    
+    // Use ServiceFactory to create properly wired services
+    const { memoryManager, reactAgentManager } = await ServiceFactory.createLegacyServices(this.llm);
+    this.memoryManager = memoryManager;
+    
     this.conversationEngine = await ConversationEngine.create(this.llm, this.memoryManager);
     this.uiManager = new UIManager();
   }

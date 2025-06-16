@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { MCPServerConfig } from '../services/mcp-client';
+import { MCPServerConfig } from '../services/mcp/mcp-client';
 
 /**
  * Configuration Manager

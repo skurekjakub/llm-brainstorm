@@ -30,7 +30,7 @@ export class InternetSearchTool implements ToolCreator {
     this.config = {
       name: "internet_search",
       description: "Search the internet for current information, news, facts, or recent developments",
-      enabled: !!this.searchTool,
+      enabled: false,
       dependencies: ["TAVILY_API_KEY"]
     };
   }

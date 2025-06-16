@@ -1,47 +1,42 @@
-import { DynamicStructuredTool, StructuredTool } from "@langchain/core/tools";
-import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { MemoryManager } from './memory-manager';
-import { MCPManager } from './mcp-manager';
+import { StructuredTool } from "@langchain/core/tools";
+import { MemoryContextBuilder } from './memory/memory-context-builder';
+import { MCPManager } from './mcp/mcp-manager';
 import { 
   ToolCreator, 
   BaseToolConfig,
   InternetSearchTool, 
-  MemoryRecallTool, 
-  CharacterInsightTool, 
-  ConversationAnalysisTool,
+  CharacterInsightTool,
   JiraIssueTool,
   MCPToolWrapper
 } from '../tools';
 
 /**
- * Tool Registry
+ * Decoupled Tool Registry
  * 
- * Responsible for initializing and managing all available tools for ReAct agents.
- * Provides a centralized place to register, configure, and retrieve tools.
+ * No longer depends on MemoryManager directly.
+ * Memory-dependent tools receive memory through dependency injection.
  */
 
-export class ToolRegistry {
+export class DecoupledToolRegistry {
   private tools: StructuredTool[];
   private toolCreators: Map<string, ToolCreator>;
-  private dbManager: FiendsDBManager;
-  private memoryManager: MemoryManager;
   private mcpManager: MCPManager;
+  private memoryContextBuilder?: MemoryContextBuilder;
 
-  private constructor(memoryManager: MemoryManager) {
+  constructor(memoryContextBuilder?: MemoryContextBuilder) {
     this.tools = [];
     this.toolCreators = new Map();
-    this.dbManager = FiendsDBManager.getInstance();
-    this.memoryManager = memoryManager;
     this.mcpManager = MCPManager.getInstance();
+    this.memoryContextBuilder = memoryContextBuilder;
     
     this.initializeToolCreators();
   }
 
   /**
-   * Create and initialize a new ToolRegistry instance
+   * Create and initialize a new DecoupledToolRegistry instance
    */
-  static async create(memoryManager: MemoryManager): Promise<ToolRegistry> {
-    const registry = new ToolRegistry(memoryManager);
+  static async create(memoryContextBuilder?: MemoryContextBuilder): Promise<DecoupledToolRegistry> {
+    const registry = new DecoupledToolRegistry(memoryContextBuilder);
     await registry.initializeAllTools();
     return registry;
   }
@@ -50,19 +45,31 @@ export class ToolRegistry {
    * Initialize tool creators
    */
   private initializeToolCreators(): void {
-    // Initialize individual tool creators
+    // Initialize tools that don't need memory
     const internetSearchTool = new InternetSearchTool();
-    const memoryRecallTool = new MemoryRecallTool(this.memoryManager);
     const characterInsightTool = new CharacterInsightTool();
-    const conversationAnalysisTool = new ConversationAnalysisTool(this.memoryManager);
     const jiraIssueTool = new JiraIssueTool();
 
-    // Register tool creators
+    // Register non-memory tools
     this.toolCreators.set('internet_search', internetSearchTool);
-    this.toolCreators.set('recall_memory', memoryRecallTool);
     this.toolCreators.set('character_insight', characterInsightTool);
-    this.toolCreators.set('conversation_analysis', conversationAnalysisTool);
     this.toolCreators.set('jira_get_issue', jiraIssueTool);
+
+    // Memory-dependent tools will be added separately if memory is available
+    if (this.memoryContextBuilder) {
+      this.initializeMemoryDependentTools();
+    }
+  }
+
+  /**
+   * Initialize tools that depend on memory
+   */
+  private initializeMemoryDependentTools(): void {
+    if (!this.memoryContextBuilder) return;
+
+    // We'll implement memory-dependent tools here when we have proper abstractions
+    // For now, we'll skip memory recall and conversation analysis tools
+    console.log('⚠️  Memory-dependent tools not yet implemented in decoupled registry');
   }
 
   /**
@@ -89,7 +96,7 @@ export class ToolRegistry {
       }
     }
     
-    console.log(`🔧 Tool Registry initialized with ${this.tools.length}/${this.toolCreators.size} tools enabled`);
+    console.log(`🔧 Decoupled Tool Registry initialized with ${this.tools.length}/${this.toolCreators.size} tools enabled`);
   }
 
   /**
@@ -133,7 +140,7 @@ export class ToolRegistry {
    * Get all enabled tools
    */
   getEnabledTools(): StructuredTool[] {
-    return this.tools; // All tools in the array are already enabled
+    return this.tools;
   }
 
   /**
@@ -225,7 +232,7 @@ export class ToolRegistry {
    * Refresh tools (useful if dependencies change)
    */
   async refreshTools(): Promise<void> {
-    console.log("🔄 Refreshing tool registry...");
+    console.log("🔄 Refreshing decoupled tool registry...");
     await this.initializeAllTools();
   }
 

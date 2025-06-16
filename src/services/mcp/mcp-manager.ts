@@ -1,5 +1,5 @@
 import { MCPClient, MCPServerConfig, MCPTool } from './mcp-client';
-import { ConfigManager } from '../managers/config-manager';
+import { ConfigManager } from '../../managers/config-manager';
 
 /**
  * MCP Manager

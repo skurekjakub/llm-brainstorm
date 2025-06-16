@@ -1,8 +1,9 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { TavilySearch } from "@langchain/tavily";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { MemoryManager } from './memory-manager';
+import { MemoryManager } from './memory/memory-manager';
 import { ReactAgentManager } from './react-agent-manager';
+import { ServiceFactory } from './service-factory';
 
 /**
  * Conversation Engine
@@ -62,10 +63,10 @@ export class ConversationEngine {
       console.log("⚠️  Internet search disabled - Tavily not available");
     }
 
-    // Initialize ReAct agent manager
-    const agentManager = await ReactAgentManager.create(llm, memoryManager);
+    // Initialize ReAct agent manager using ServiceFactory
+    const { memoryManager: _memoryManager, reactAgentManager } = await ServiceFactory.createLegacyServices(llm);
     
-    const engine = new ConversationEngine(llm, memoryManager, agentManager);
+    const engine = new ConversationEngine(llm, memoryManager, reactAgentManager);
     engine.searchTool = searchTool || null;
     engine.searchEnabled = searchEnabled;
     
@@ -112,7 +113,7 @@ Provide your unique perspective in 2-3 concise sentences:`;
       // Get conversation context from memory
       const conversationContext = await this.memoryManager.getFiendMemoryContext(fiendName);
       
-      if (this.agentManager.isToolsEnabled()) {
+      if (await this.agentManager.isToolsEnabled()) {
         // Use ReAct agent if tools are available
         console.log(`   🤖 Using ReAct agent for ${fiendName} (with ${this.agentManager.getToolCount()} tools)`);
         

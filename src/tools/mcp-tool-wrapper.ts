@@ -1,6 +1,6 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
-import { MCPManager, MCPToolWithServer } from '../services/mcp-manager';
+import { MCPManager, MCPToolWithServer } from '../services/mcp/mcp-manager';
 import { BaseToolConfig, ToolCreator } from './base-tool';
 
 /**
