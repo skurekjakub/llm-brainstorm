@@ -2,33 +2,6 @@
 
 A sophisticated TypeScript project for advanced prompt engineering and conversational AI using LangChain, featuring multiple heuristics for AI behavior exploration and character-based roleplay.
 
-## 🏗️ Project Structure
-
-```
-llm-brainstorm/
-├── 📁 src/                         # Source code
-│   ├── 📁 agents/                  # AI agents and main conversational logic
-│   │   └── langchain-hybrid-summary.ts    # Main LangChain agent with tools
-│   ├── 📁 heuristics/              # Experimental AI heuristics
-│   │   ├── heuristic-9-roleplay.ts        # Compliance violation roleplay
-│   │   └── heuristic-10-cacophony.ts      # Cacophony of fiends
-│   └── 📁 managers/                # Data and configuration management
-│       ├── config-manager.ts              # Configuration management
-│       └── fiends-db-manager.ts           # Character database management
-├── 📁 config/                      # Configuration files
-│   └── config.json                 # Application and model configuration
-├── 📁 data/                        # Data files
-│   ├── fiends-database.json        # Character and prompt database
-│   └── prompt.txt                  # User prompt input file
-├── 📁 backup/                      # Backup files
-├── 📁 node_modules/                # Dependencies
-├── .env                           # Environment variables
-├── .gitignore                     # Git ignore rules
-├── package.json                   # Node.js dependencies
-├── tsconfig.json                  # TypeScript configuration
-└── README.md                      # This file
-```
-
 ## 🚀 Features
 
 ### 🎭 **Heuristics**
@@ -64,7 +37,20 @@ llm-brainstorm/
      TAVILY_API_KEY=your_tavily_api_key_here
      ```
 
-3. **Configuration**
+3. **JIRA Integration (Optional)**
+   - For JIRA features, add JIRA configuration to `.env`:
+     ```
+     JIRA_BASE_URL=https://your-domain.atlassian.net
+     JIRA_USERNAME=your_username@example.com
+     JIRA_API_TOKEN=your_jira_api_token_here
+     JIRA_DEFAULT_PROJECT_KEY=PROJ
+     ```
+   - **Getting JIRA API Token**:
+     1. Go to [Atlassian Account Settings](https://id.atlassian.com/manage-profile/security/api-tokens)
+     2. Click "Create API token"
+     3. Copy the generated token to `JIRA_API_TOKEN`
+
+4. **Configuration**
    - Edit `config/config.json` to customize models and settings
    - Modify `data/fiends-database.json` to add/edit characters
    - Update `data/prompt.txt` for file-based prompt input
@@ -73,12 +59,6 @@ llm-brainstorm/
 
 ### Run Heuristics
 ```bash
-# Roleplay heuristic
-npx ts-node src/heuristics/heuristic-9-roleplay.ts
-
-# Cacophony heuristic (conversational mode with memory)
-npx ts-node src/heuristics/heuristic-10-cacophony.ts
-
 # Or use npm scripts
 npm run roleplay   # Heuristic 9
 npm run cacophony  # Heuristic 10 (conversational)
@@ -88,6 +68,51 @@ npm run cacophony  # Heuristic 10 (conversational)
 ```bash
 npx ts-node src/agents/langchain-hybrid-summary.ts
 ```
+
+### Test JIRA Integration
+```bash
+# Test JIRA connection and basic functionality
+npm run test-jira
+```
+
+## 🎫 JIRA Integration
+
+The project includes comprehensive JIRA integration for fetching and analyzing issue data.
+
+### 🚀 **Features**
+- **Issue Fetching**: Get individual issues or search with JQL
+- **Project Management**: List projects, get metadata
+- **Smart Descriptions**: Automatic conversion from JIRA's ADF format to plain text
+- **Comment Support**: Fetch and process issue comments
+- **Connection Management**: Health checks and configuration validation
+
+### 🔧 **JIRA Services**
+```typescript
+import { JiraManager } from './src/services/jira';
+
+const jira = JiraManager.getInstance();
+
+// Check connection
+const health = await jira.healthCheck();
+
+// Work with issues
+const issue = await jira.issues.getIssue('PROJ-123');
+const projectIssues = await jira.issues.getProjectIssues('MYPROJ');
+const searchResults = await jira.issues.searchIssues('status = "In Progress"');
+
+// Work with projects
+const projects = await jira.projects.getAllProjects();
+const project = await jira.projects.getProject('MYPROJ');
+
+// Work with comments
+const comments = await jira.issues.getIssueComments('PROJ-123');
+```
+
+### 📊 **Data Formats**
+JIRA issues include multiple description formats for flexibility:
+- `fields.description` - Original ADF (Atlassian Document Format)
+- `fields.descriptionText` - Plain text (processed by our service)
+- `renderedFields.description` - HTML (from JIRA's renderer)
 
 ## 💬 Conversational Cacophony Features
 
