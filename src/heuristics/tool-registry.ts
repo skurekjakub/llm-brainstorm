@@ -1,4 +1,4 @@
-import { DynamicStructuredTool } from "@langchain/core/tools";
+import { DynamicStructuredTool, StructuredTool } from "@langchain/core/tools";
 import { TavilySearch } from "@langchain/tavily";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
 import { MemoryManager } from './memory-manager';
@@ -20,7 +20,7 @@ import {
  */
 
 export class ToolRegistry {
-  private tools: DynamicStructuredTool[];
+  private tools: StructuredTool[];
   private toolCreators: Map<string, ToolCreator>;
   private dbManager: FiendsDBManager;
   private memoryManager: MemoryManager;
@@ -93,14 +93,14 @@ export class ToolRegistry {
   /**
    * Get all enabled tools
    */
-  getEnabledTools(): DynamicStructuredTool[] {
+  getEnabledTools(): StructuredTool[] {
     return this.tools; // All tools in the array are already enabled
   }
 
   /**
    * Get all tools (enabled and disabled)
    */
-  getAllTools(): DynamicStructuredTool[] {
+  getAllTools(): StructuredTool[] {
     return [...this.tools];
   }
 

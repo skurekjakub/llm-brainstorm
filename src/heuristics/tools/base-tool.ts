@@ -1,4 +1,4 @@
-import { DynamicStructuredTool } from "@langchain/core/tools";
+import { DynamicStructuredTool, StructuredTool } from "@langchain/core/tools";
 
 /**
  * Base Tool Interface
@@ -14,7 +14,7 @@ export interface BaseToolConfig {
 }
 
 export interface ToolCreator {
-  createTool(): DynamicStructuredTool;
+  createTool(): StructuredTool;
   getConfig(): BaseToolConfig;
   isEnabled(): boolean;
 }

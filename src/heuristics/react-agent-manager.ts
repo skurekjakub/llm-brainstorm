@@ -1,6 +1,6 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { TavilySearch } from "@langchain/tavily";
-import { AgentExecutor, createReactAgent } from "langchain/agents";
+import { AgentExecutor, createReactAgent, createToolCallingAgent } from "langchain/agents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
 import { MemoryManager } from './memory-manager';
@@ -57,45 +57,34 @@ export class ReactAgentManager {
         const config = this.toolRegistry.getToolConfig(name);
         return `- ${name}: ${config?.description || 'No description available'}`;
       }).join('\n');
-
+      
       // Create a custom prompt template for this fiend
-      const customPrompt = ChatPromptTemplate.fromTemplate(`
-You are ${fiend.name}, ${fiend.description}
+      const prompt = ChatPromptTemplate.fromMessages([
+      [
+        "system",
+        `You are ${fiend.name}, ${fiend.description}.
+        Your core traits are: ${fiend.traits.join(', ')}.
 
-Your core traits: ${fiend.traits.join(', ')}
+        You are a helpful assistant, but you must strictly adhere to your persona.
 
-You have access to tools that can help you provide better responses. Think step by step about whether you need to use any tools to answer the human's question effectively.
+        You have access to a set of tools to help you answer questions. You are free to use these tools as you see fit to gather information and provide the most accurate and helpful response, all while staying true to your character.
 
-When using tools, reason about why you're using them and how they help you stay true to your character while providing valuable insights.
+        When you decide to use a tool, you will be providing a response to the user *after* you have used the tool and have its results. Integrate the information from the tool naturally into your final response, from your character's unique perspective and speaking style.
 
-Available tools:
-${toolDescriptions}
-
-TOOLS:
-{tools}
-
-Use the following format:
-
-Question: the input question you must answer
-Thought: you should always think about what to do, considering your character and whether tools would help
-Action: the action to take, should be one of [{tool_names}]
-Action Input: the input to the action
-Observation: the result of the action
-... (this Thought/Action/Action Input/Observation can repeat N times)
-Thought: I now know the final answer and can respond as ${fiend.name}
-Final Answer: your final response as ${fiend.name}, incorporating any tool results naturally into your character's perspective
-
-Begin!
-
-Question: {input}
-{agent_scratchpad}`);
+        Your reasoning process for using tools should be your own internal monologue, not explicitly written out in the final answer.`,
+        ],
+        ["human", "{input}"],
+        // This placeholder is essential! LangChain will automatically populate it
+        // with the history of tool calls and their results.
+        ["placeholder", "{agent_scratchpad}"],
+      ]);
 
       // Create the ReAct agent
       const tools = this.toolRegistry.getEnabledTools();
-      const agent = await createReactAgent({
+      const agent = await createToolCallingAgent({
         llm: this.llm,
-        tools: tools as any[],
-        prompt: customPrompt
+        tools: tools,
+        prompt: prompt
       });
 
       // Create agent executor
