@@ -3,7 +3,7 @@ import { TavilySearch } from "@langchain/tavily";
 import { AgentExecutor, createReactAgent, createToolCallingAgent } from "langchain/agents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { MemoryManager } from '../services/memory-manager';
+import { MemoryManager } from './memory-manager';
 import { ToolRegistry } from './tool-registry';
 
 /**
@@ -53,7 +53,7 @@ export class ReactAgentManager {
 
       // Get available tools information
       const enabledToolNames = this.toolRegistry.getEnabledToolNames();
-      const toolDescriptions = enabledToolNames.map(name => {
+      const toolDescriptions = enabledToolNames.map((name: string) => {
         const config = this.toolRegistry.getToolConfig(name);
         return `- ${name}: ${config?.description || 'No description available'}`;
       }).join('\n');

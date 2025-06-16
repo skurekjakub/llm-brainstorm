@@ -1,7 +1,7 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { ConversationTurn } from '../services/memory-manager';
+import { ConversationTurn } from './memory-manager';
 
 /**
  * UI Manager
@@ -78,7 +78,7 @@ export class UIManager {
       
       // Display tool usage information if used
       if (response.searchUsed && response.searchQueries && response.searchQueries.length > 0) {
-        console.log(`   � Used tools: ${response.searchQueries.map((q: string) => `search("${q}")`).join(', ')}`);
+        console.log(`   🔧 Used tools: ${response.searchQueries.map((q: string) => `search("${q}")`).join(', ')}`);
       }
       
       console.log(response.perspective);

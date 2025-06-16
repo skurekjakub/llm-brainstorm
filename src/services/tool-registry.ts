@@ -1,7 +1,7 @@
 import { DynamicStructuredTool, StructuredTool } from "@langchain/core/tools";
 import { TavilySearch } from "@langchain/tavily";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { MemoryManager } from '../services/memory-manager';
+import { MemoryManager } from './memory-manager';
 import { 
   ToolCreator, 
   BaseToolConfig,
