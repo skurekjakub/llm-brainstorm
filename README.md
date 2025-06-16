@@ -34,6 +34,9 @@ llm-brainstorm/
 ### 🎭 **Heuristics**
 - **Heuristic 9 (Roleplay)**: Advanced character-based roleplay with compliance testing
 - **Heuristic 10 (Cacophony)**: Multi-perspective analysis using diverse AI personas
+  - **💬 Conversational Mode**: Real-time conversation turns with persistent memory
+  - **🧠 Memory System**: Each fiend and sage maintains conversation history
+  - **🔄 Interactive**: Choose prompt source (file or console) and chat continuously
 
 ### 🤖 **Agents**
 - **Hybrid Summary Agent**: LangChain-powered agent with tools and memory
@@ -73,14 +76,50 @@ llm-brainstorm/
 # Roleplay heuristic
 npx ts-node src/heuristics/heuristic-9-roleplay.ts
 
-# Cacophony heuristic  
+# Cacophony heuristic (conversational mode with memory)
 npx ts-node src/heuristics/heuristic-10-cacophony.ts
+
+# Or use npm scripts
+npm run roleplay   # Heuristic 9
+npm run cacophony  # Heuristic 10 (conversational)
 ```
 
 ### Run Main Agent
 ```bash
 npx ts-node src/agents/langchain-hybrid-summary.ts
 ```
+
+## 💬 Conversational Cacophony Features
+
+### 🧠 **Memory-Persistent Conversations**
+The Cacophony heuristic now supports real-time conversations with persistent memory:
+
+- **Individual Memory**: Each fiend maintains their own conversation history
+- **Sage Memory**: The sage remembers the entire conversation context
+- **Conversation Turns**: Full dialogue tracking with timestamps
+- **Memory Management**: Clear memories or view conversation history
+
+### 🎯 **Interactive Features**
+```bash
+# When running cacophony, you can:
+npm run cacophony
+
+# Choose prompt source:
+1. Load from prompt.txt file
+2. Enter manually in console
+
+# During conversation:
+- Type your messages for ongoing dialogue
+- Use 'quit' to exit
+- Use 'clear' to reset all memories
+- Use 'members' to see council composition
+```
+
+### 🎭 **Council Dynamics**
+- **Persistent Council**: Same characters throughout conversation
+- **Contextual Responses**: Each character remembers previous exchanges
+- **Evolving Perspectives**: Opinions develop based on conversation flow
+- **Synthesis Memory**: Sage builds upon previous analyses
 
 ## ⚙️ Configuration Management
 

@@ -13,7 +13,7 @@
     "heuristic-9": "ts-node src/heuristics/heuristic-9-roleplay.ts",
     "heuristic-10": "ts-node src/heuristics/heuristic-10-cacophony.ts",
     "roleplay": "ts-node src/heuristics/heuristic-9-roleplay.ts",
-    "cacophony": "ts-node src/heuristics/heuristic-10-cacophony.ts",
+    "cacophony": "ts-node src/heuristics/cacophony-entry.ts",
     "test-config": "ts-node -e \"import { ConfigManager } from './src/managers/config-manager'; const cm = ConfigManager.getInstance(); console.log('✅ Config loaded:', cm.getConfigStats());\"",
     "test-db": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('✅ Database loaded:', db.getStats());\"",
     "list-characters": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('Characters:', db.getAllCharacters().map(c => c.name));\"",
