@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import { MCPServerConfig } from '../services/mcp-client';
 
 /**
  * Configuration Manager
@@ -29,6 +30,10 @@ export interface ProviderConfig {
   baseUrl: string;
 }
 
+export interface MCPConfig {
+  servers: MCPServerConfig[];
+}
+
 export interface AppConfig {
   models: {
     main: ModelConfig;
@@ -40,6 +45,7 @@ export interface AppConfig {
   providers: {
     [key: string]: ProviderConfig;
   };
+  mcp?: MCPConfig;
 }
 
 export class ConfigManager {
@@ -172,6 +178,23 @@ export class ConfigManager {
   public getProviderConfig(provider: string): ProviderConfig | undefined {
     this.checkAndReload();
     return this.config.providers[provider] ? { ...this.config.providers[provider] } : undefined;
+  }
+
+  /**
+   * Get MCP (Model Context Protocol) configuration
+   */
+  public getMCPConfig(): MCPConfig | undefined {
+    this.checkAndReload();
+    return this.config.mcp;
+  }
+
+  /**
+   * Update MCP configuration
+   */
+  public updateMCPConfig(mcpConfig: MCPConfig): void {
+    const newConfig = { ...this.config };
+    newConfig.mcp = mcpConfig;
+    this.saveConfig(newConfig);
   }
 
   /**

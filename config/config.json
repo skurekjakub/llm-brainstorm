@@ -37,5 +37,24 @@
       "apiKeyEnvVar": "GOOGLE_API_KEY",
       "baseUrl": "https://generativelanguage.googleapis.com"
     }
+  },
+  "mcp": {
+    "servers": [
+      {
+        "name": "gitstuffserver",
+        "command": "node",
+        "args": ["C:\\projects\\MCPTools\\GitStuffServer\\build\\index.js"],
+        "enabled": true,
+        "description": "Git operations server",
+        "env": {}
+      },
+      {
+        "name": "filesystem_stdio",
+        "command": "node",
+        "args": ["C:\\projects\\filesystem-mcp-server\\dist\\index.js"],
+        "enabled": true,
+        "autoApprove": []
+      }
+    ]
   }
 }

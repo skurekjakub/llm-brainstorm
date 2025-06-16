@@ -2,6 +2,7 @@ import { DynamicStructuredTool, StructuredTool } from "@langchain/core/tools";
 import { TavilySearch } from "@langchain/tavily";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
 import { MemoryManager } from './memory-manager';
+import { MCPManager } from './mcp-manager';
 import { 
   ToolCreator, 
   BaseToolConfig,
@@ -10,6 +11,7 @@ import {
   CharacterInsightTool, 
   ConversationAnalysisTool,
   JiraIssueTool,
+  MCPToolWrapper
 } from '../tools';
 
 /**
@@ -24,15 +26,25 @@ export class ToolRegistry {
   private toolCreators: Map<string, ToolCreator>;
   private dbManager: FiendsDBManager;
   private memoryManager: MemoryManager;
+  private mcpManager: MCPManager;
 
-  constructor(memoryManager: MemoryManager, searchTool?: TavilySearch) {
+  private constructor(memoryManager: MemoryManager, searchTool?: TavilySearch) {
     this.tools = [];
     this.toolCreators = new Map();
     this.dbManager = FiendsDBManager.getInstance();
     this.memoryManager = memoryManager;
+    this.mcpManager = MCPManager.getInstance();
     
     this.initializeToolCreators(searchTool);
-    this.initializeAllTools();
+  }
+
+  /**
+   * Create and initialize a new ToolRegistry instance
+   */
+  static async create(memoryManager: MemoryManager, searchTool?: TavilySearch): Promise<ToolRegistry> {
+    const registry = new ToolRegistry(memoryManager, searchTool);
+    await registry.initializeAllTools();
+    return registry;
   }
 
   /**
@@ -57,8 +69,11 @@ export class ToolRegistry {
   /**
    * Initialize all available tools
    */
-  private initializeAllTools(): void {
+  private async initializeAllTools(): Promise<void> {
     this.tools = [];
+
+    // First initialize MCP servers and tools
+    await this.initializeMCPTools();
 
     // Create tools from registered creators
     for (const [name, creator] of this.toolCreators) {
@@ -76,6 +91,29 @@ export class ToolRegistry {
     }
     
     console.log(`🔧 Tool Registry initialized with ${this.tools.length}/${this.toolCreators.size} tools enabled`);
+  }
+
+  /**
+   * Initialize MCP servers and register their tools
+   */
+  private async initializeMCPTools(): Promise<void> {
+    try {
+      console.log('🔌 Initializing MCP servers...');
+      await this.mcpManager.initializeServers();
+      
+      // Get all available MCP tools and register them
+      const mcpTools = this.mcpManager.getAllTools();
+      console.log(`📦 Found ${mcpTools.length} MCP tools from connected servers`);
+      
+      for (const mcpTool of mcpTools) {
+        const toolWrapper = new MCPToolWrapper(mcpTool);
+        this.toolCreators.set(mcpTool.name, toolWrapper);
+        console.log(`   📋 Registered MCP tool: ${mcpTool.name} (from ${mcpTool.serverName})`);
+      }
+      
+    } catch (error) {
+      console.error('❌ Failed to initialize MCP tools:', error);
+    }
   }
 
   /**
@@ -187,8 +225,15 @@ export class ToolRegistry {
   /**
    * Refresh tools (useful if dependencies change)
    */
-  refreshTools(): void {
+  async refreshTools(): Promise<void> {
     console.log("🔄 Refreshing tool registry...");
-    this.initializeAllTools();
+    await this.initializeAllTools();
+  }
+
+  /**
+   * Get the MCP manager instance for direct MCP operations
+   */
+  getMCPManager(): MCPManager {
+    return this.mcpManager;
   }
 }

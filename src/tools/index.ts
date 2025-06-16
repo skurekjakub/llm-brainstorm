@@ -10,3 +10,4 @@ export { MemoryRecallTool } from './memory-recall-tool';
 export { CharacterInsightTool } from './character-insight-tool';
 export { JiraIssueTool } from './jira-issue-tool';
 export { ConversationAnalysisTool } from './conversation-analysis-tool';
+export { MCPToolWrapper } from './mcp-tool-wrapper';

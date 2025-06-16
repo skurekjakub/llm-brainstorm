@@ -18,6 +18,7 @@
     "test-db": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('✅ Database loaded:', db.getStats());\"",
     "test-jira": "ts-node test-jira.ts",
     "test-jira-tool": "ts-node test-jira-tool.ts",
+    "test-mcp": "ts-node test-mcp-integration.ts",
     "list-characters": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('Characters:', db.getAllCharacters().map(c => c.name));\"",
     "help": "ts-node index.ts help"
   },
