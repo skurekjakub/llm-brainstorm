@@ -1,16 +1,24 @@
 #!/usr/bin/env node
 
 /**
- * Simple Cacophony Entry Script
+ * Cacophony Entry Point (Refactored)
+ * 
+ * Uses the new refactored orchestrator with helper classes.
  */
+
+import { CacophonyOrchestrator, SessionConfig } from './cacophony';
 
 async function main() {
   try {
-    // Import the main cacophony orchestrator
-    const { CacophonyOrchestrator } = await import('./heuristic-10-cacophony');
-    
+    // Optional: customize session configuration
+    const sessionConfig: Partial<SessionConfig> = {
+      fiendCount: 5,
+      enableSearch: true,
+      defaultTimeout: 30000
+    };
+
     // Create and run the orchestrator
-    const orchestrator = await CacophonyOrchestrator.create();
+    const orchestrator = await CacophonyOrchestrator.create(sessionConfig);
     await orchestrator.runConversationalSession();
     
   } catch (error) {
@@ -32,3 +40,4 @@ if (require.main === module) {
 }
 
 export { main as runCacophony };
+export { CacophonyOrchestrator } from './cacophony';
