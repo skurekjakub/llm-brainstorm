@@ -1,7 +1,7 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import { BaseToolConfig, ToolCreator } from './base-tool';
-import { FiendsDBManager } from '../../managers/fiends-db-manager';
+import { FiendsDBManager } from '../managers/fiends-db-manager';
 
 /**
  * Character Insight Tool

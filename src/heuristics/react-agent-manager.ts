@@ -3,7 +3,7 @@ import { TavilySearch } from "@langchain/tavily";
 import { AgentExecutor, createReactAgent, createToolCallingAgent } from "langchain/agents";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { MemoryManager } from './memory-manager';
+import { MemoryManager } from '../services/memory-manager';
 import { ToolRegistry } from './tool-registry';
 
 /**

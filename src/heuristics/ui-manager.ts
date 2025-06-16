@@ -1,7 +1,7 @@
 import * as readline from 'node:readline/promises';
 import { stdin as input, stdout as output } from 'node:process';
 import { FiendsDBManager } from '../managers/fiends-db-manager';
-import { ConversationTurn } from './memory-manager';
+import { ConversationTurn } from '../services/memory-manager';
 
 /**
  * UI Manager

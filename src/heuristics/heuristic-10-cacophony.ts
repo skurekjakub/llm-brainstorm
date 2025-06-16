@@ -1,7 +1,7 @@
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ConfigManager } from '../managers/config-manager';
 import { CouncilManager } from './council-manager';
-import { MemoryManager, ConversationTurn } from './memory-manager';
+import { MemoryManager, ConversationTurn } from '../services/memory-manager';
 import { ConversationEngine } from './conversation-engine';
 import { UIManager } from './ui-manager';
 import 'dotenv/config';

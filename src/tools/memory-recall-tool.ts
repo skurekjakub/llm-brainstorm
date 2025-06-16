@@ -1,7 +1,7 @@
 import { DynamicStructuredTool } from "@langchain/core/tools";
 import { z } from "zod";
 import { BaseToolConfig, ToolCreator } from './base-tool';
-import { MemoryManager } from '../memory-manager';
+import { MemoryManager } from '../services/memory-manager';
 
 /**
  * Memory Recall Tool
