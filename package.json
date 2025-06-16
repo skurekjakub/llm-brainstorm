@@ -16,6 +16,8 @@
     "cacophony": "ts-node src/heuristics/cacophony-entry.ts",
     "test-config": "ts-node -e \"import { ConfigManager } from './src/managers/config-manager'; const cm = ConfigManager.getInstance(); console.log('✅ Config loaded:', cm.getConfigStats());\"",
     "test-db": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('✅ Database loaded:', db.getStats());\"",
+    "test-jira": "ts-node test-jira.ts",
+    "test-jira-tool": "ts-node test-jira-tool.ts",
     "list-characters": "ts-node -e \"import { FiendsDBManager } from './src/managers/fiends-db-manager'; const db = FiendsDBManager.getInstance(); console.log('Characters:', db.getAllCharacters().map(c => c.name));\"",
     "help": "ts-node index.ts help"
   },
@@ -24,6 +26,7 @@
     "@langchain/core": "^0.3.58",
     "@langchain/google-genai": "^0.2.12",
     "@langchain/tavily": "^0.1.3",
+    "axios": "^1.10.0",
     "dotenv": "^16.5.0",
     "langchain": "^0.3.28",
     "zod": "^3.25.64"

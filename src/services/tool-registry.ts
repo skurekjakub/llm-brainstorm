@@ -9,7 +9,7 @@ import {
   MemoryRecallTool, 
   CharacterInsightTool, 
   ConversationAnalysisTool,
-  TOOL_METADATA
+  JiraIssueTool,
 } from '../tools';
 
 /**
@@ -44,12 +44,14 @@ export class ToolRegistry {
     const memoryRecallTool = new MemoryRecallTool(this.memoryManager);
     const characterInsightTool = new CharacterInsightTool();
     const conversationAnalysisTool = new ConversationAnalysisTool(this.memoryManager);
+    const jiraIssueTool = new JiraIssueTool();
 
     // Register tool creators
     this.toolCreators.set('internet_search', internetSearchTool);
     this.toolCreators.set('recall_memory', memoryRecallTool);
     this.toolCreators.set('character_insight', characterInsightTool);
     this.toolCreators.set('conversation_analysis', conversationAnalysisTool);
+    this.toolCreators.set('jira_get_issue', jiraIssueTool);
   }
 
   /**
